@@ -4,14 +4,17 @@ import App from './App';
 import Customer from './components/Customer'
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { ApolloProvider} from "@apollo/client";
+import apollo from './server/server'
 
 ReactDOM.render(
+  <ApolloProvider client={apollo}>
   <BrowserRouter>
     <Routes>
       <Route path='/' element={<App/>}/>
       <Route path='/details' element={<Customer/>}/>
     </Routes>
-  </BrowserRouter>,
+  </BrowserRouter></ApolloProvider>,
   document.getElementById('root')
 );
 

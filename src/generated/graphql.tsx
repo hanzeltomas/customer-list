@@ -78,8 +78,8 @@ export type String_Comparison_Exp = {
 /** columns and relationships of "customer_order_sum" */
 export type Customer_Order_Sum = {
   __typename?: 'customer_order_sum';
-  customer: Scalars['Int'];
-  sum: Scalars['Float'];
+  customer?: Maybe<Scalars['Int']>;
+  sum?: Maybe<Scalars['Float']>;
 };
 
 /** aggregated selection of "customer_order_sum" */
@@ -945,6 +945,15 @@ export type Subscription_RootOrders_By_PkArgs = {
   id: Scalars['Int'];
 };
 
+export type CustomerFragmentFragment = { __typename?: 'customers', birth_date: any, id: number, name: string, vip: string };
+
+export type OrderFragmentFragment = { __typename?: 'orders', id: number, date: any, product_count: number, sum: number };
+
+export type GetCustomersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCustomersQuery = { __typename?: 'query_root', customers: Array<{ __typename?: 'customers', birth_date: any, id: number, name: string, vip: string }>, customer_order_sum: Array<{ __typename?: 'customer_order_sum', customer?: number | null, sum?: number | null }> };
+
 export type GetOrdersQueryVariables = Exact<{
   customer_id: Scalars['Int'];
 }>;
@@ -952,22 +961,67 @@ export type GetOrdersQueryVariables = Exact<{
 
 export type GetOrdersQuery = { __typename?: 'query_root', orders: Array<{ __typename?: 'orders', id: number, date: any, product_count: number, sum: number }> };
 
-export type GetCustomersQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetCustomersQuery = { __typename?: 'query_root', customers: Array<{ __typename?: 'customers', id: number, name: string, birth_date: any, vip: string }>, customer_order_sum: Array<{ __typename?: 'customer_order_sum', customer: number, sum: number }> };
-
-
-export const GetOrdersDocument = gql`
-    query getOrders($customer_id: Int!) {
-  orders(where: {customer: {_eq: $customer_id}}) {
-    id
-    date
-    product_count
+export const CustomerFragmentFragmentDoc = gql`
+    fragment customerFragment on customers {
+  birth_date
+  id
+  name
+  vip
+}
+    `;
+export const OrderFragmentFragmentDoc = gql`
+    fragment orderFragment on orders {
+  id
+  date
+  product_count
+  sum
+}
+    `;
+export const GetCustomersDocument = gql`
+    query getCustomers {
+  customers {
+    ...customerFragment
+  }
+  customer_order_sum {
+    customer
     sum
   }
 }
-    `;
+    ${CustomerFragmentFragmentDoc}`;
+
+/**
+ * __useGetCustomersQuery__
+ *
+ * To run a query within a React component, call `useGetCustomersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCustomersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCustomersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCustomersQuery(baseOptions?: Apollo.QueryHookOptions<GetCustomersQuery, GetCustomersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCustomersQuery, GetCustomersQueryVariables>(GetCustomersDocument, options);
+      }
+export function useGetCustomersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCustomersQuery, GetCustomersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCustomersQuery, GetCustomersQueryVariables>(GetCustomersDocument, options);
+        }
+export type GetCustomersQueryHookResult = ReturnType<typeof useGetCustomersQuery>;
+export type GetCustomersLazyQueryHookResult = ReturnType<typeof useGetCustomersLazyQuery>;
+export type GetCustomersQueryResult = Apollo.QueryResult<GetCustomersQuery, GetCustomersQueryVariables>;
+export const GetOrdersDocument = gql`
+    query getOrders($customer_id: Int!) {
+  orders(where: {customer: {_eq: $customer_id}}) {
+    ...orderFragment
+  }
+}
+    ${OrderFragmentFragmentDoc}`;
 
 /**
  * __useGetOrdersQuery__
@@ -996,44 +1050,3 @@ export function useGetOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type GetOrdersQueryHookResult = ReturnType<typeof useGetOrdersQuery>;
 export type GetOrdersLazyQueryHookResult = ReturnType<typeof useGetOrdersLazyQuery>;
 export type GetOrdersQueryResult = Apollo.QueryResult<GetOrdersQuery, GetOrdersQueryVariables>;
-export const GetCustomersDocument = gql`
-    query getCustomers {
-  customers {
-    id
-    name
-    birth_date
-    vip
-  }
-  customer_order_sum {
-    customer
-    sum
-  }
-}
-    `;
-
-/**
- * __useGetCustomersQuery__
- *
- * To run a query within a React component, call `useGetCustomersQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCustomersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCustomersQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetCustomersQuery(baseOptions?: Apollo.QueryHookOptions<GetCustomersQuery, GetCustomersQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCustomersQuery, GetCustomersQueryVariables>(GetCustomersDocument, options);
-      }
-export function useGetCustomersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCustomersQuery, GetCustomersQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCustomersQuery, GetCustomersQueryVariables>(GetCustomersDocument, options);
-        }
-export type GetCustomersQueryHookResult = ReturnType<typeof useGetCustomersQuery>;
-export type GetCustomersLazyQueryHookResult = ReturnType<typeof useGetCustomersLazyQuery>;
-export type GetCustomersQueryResult = Apollo.QueryResult<GetCustomersQuery, GetCustomersQueryVariables>;

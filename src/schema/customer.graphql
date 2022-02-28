@@ -1,0 +1,29 @@
+fragment customerFragment on customers {
+    birth_date
+    id
+    name
+    vip
+}
+
+fragment orderFragment on orders {
+    id
+    date
+    product_count
+    sum
+}
+
+query getCustomers {
+  customers {
+    ...customerFragment
+  }
+  customer_order_sum {
+    customer
+    sum
+  }
+}
+
+query getOrders($customer_id: Int!) {
+  orders(where: {customer: {_eq: $customer_id}}) {
+    ...orderFragment
+  }
+}
